@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./index.css";
 import todosList from "./todos.json";
+import TodoList from "./components/TodoList.js";
+import { Route, NavLink } from "react-router-dom";
 
 class App extends Component {
 	state = {
@@ -58,6 +60,7 @@ class App extends Component {
 		});
 		this.setState({ todos: newNewTodos });
 	};
+
 	render() {
 		return (
 			<React.Fragment>
@@ -73,15 +76,64 @@ class App extends Component {
 							value={this.state.value}
 						/>
 					</header>
-					<TodoList
-						todos={this.state.todos}
-						handleToggleComplete={this.handleToggleComplete}
-						handleDelete={this.handleDelete}
+					<Route
+						exact
+						path="/"
+						render={() => (
+							<TodoList
+								todos={this.state.todos}
+								handleToggleComplete={this.handleToggleComplete}
+								handleDelete={this.handleDelete}
+								handleDeleteComplete={this.handleDeleteComplete}
+							/>
+						)}
 					/>
+					<Route
+						path="/active"
+						render={() => (
+							<TodoList
+								todos={this.state.todos.filter(
+									todo => todo.completed === false
+								)}
+								handleToggleComplete={this.handleToggleComplete}
+								handleDelete={this.handleDelete}
+								handleDeleteComplete={this.handleDeleteComplete}
+							/>
+						)}
+					/>
+					<Route
+						path="/completed"
+						render={() => (
+							<TodoList
+								todos={this.state.todos.filter(todo => todo.completed === true)}
+								handleToggleComplete={this.handleToggleComplete}
+								handleDelete={this.handleDelete}
+								handleDeleteComplete={this.handleDeleteComplete}
+							/>
+						)}
+					/>
+
 					<footer className="footer">
 						<span className="todo-count">
 							<strong>0</strong> item(s) left
 						</span>
+						<ul className="filters">
+							<li>
+								<NavLink exact to="/" activeClassName="selected">
+									All
+								</NavLink>
+							</li>
+							<li>
+								<NavLink to="/active" activeClassName="selected">
+									Active
+								</NavLink>
+							</li>
+							<li>
+								<NavLink to="/completed" activeClassName="selected">
+									Completed
+								</NavLink>
+							</li>
+						</ul>
 						<button
 							className="clear-completed"
 							onClick={this.props.handleDeleteComplete}
@@ -91,46 +143,6 @@ class App extends Component {
 					</footer>
 				</section>
 			</React.Fragment>
-		);
-	}
-}
-
-class TodoItem extends Component {
-	render() {
-		return (
-			<li className={this.props.completed ? "completed" : ""}>
-				<div className="view">
-					<input
-						className="toggle"
-						type="checkbox"
-						checked={this.props.completed}
-						onChange={this.props.handleToggleComplete}
-					/>
-					<label>{this.props.title}</label>
-					<button className="destroy" onClick={this.props.handleDelete} />
-				</div>
-			</li>
-		);
-	}
-}
-
-class TodoList extends Component {
-	render() {
-		return (
-			<section className="main">
-				<ul className="todo-list">
-					{this.props.todos.map(todo => (
-						<TodoItem
-							key={todo.id}
-							title={todo.title}
-							completed={todo.completed}
-							id={todo.id}
-							handleToggleComplete={this.props.handleToggleComplete(todo.id)}
-							handleDelete={event => this.props.handleDelete(todo.id)}
-						/>
-					))}
-				</ul>
-			</section>
 		);
 	}
 }
