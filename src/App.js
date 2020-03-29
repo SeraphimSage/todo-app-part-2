@@ -7,7 +7,8 @@ import { Route, NavLink } from "react-router-dom";
 class App extends Component {
   state = {
     todos: todosList,
-    value: ""
+    value: "",
+    count: ""
   };
 
   handleAddToDo = event => {
@@ -62,6 +63,7 @@ class App extends Component {
         <section className="todoapp">
           <header className="header">
             <h1>todos</h1>
+            {console.log(this.state)}
             <input
               className="new-todo"
               placeholder="What needs to be done?"
@@ -110,7 +112,19 @@ class App extends Component {
 
           <footer className="footer">
             <span className="todo-count">
-              <strong>0</strong> item(s) left
+              {/* Got some help from Meka to help in better understanding how to
+              structure the count function. */}
+              <strong>
+                {
+                  this.state.todos.filter(todo => {
+                    if (todo.completed === true) {
+                      return false;
+                    }
+                    return true;
+                  }).length
+                }
+              </strong>{" "}
+              item(s) left
             </span>
             <ul className="filters">
               <li>
