@@ -12,5 +12,5 @@ updates:
     commit-message:
       prefix: "fix(deps)"
     rebase-strategy: "auto"
-    automerged_updates: "true"
+    
 
